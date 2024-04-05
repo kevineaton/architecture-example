@@ -1,0 +1,34 @@
+direction: left
+
+Actions De-Duplication {
+  shape: sequence_diagram
+
+  app: Mobile {
+    shape: square
+  }
+  api: API {
+    shape: cloud
+  }
+  db: DB {
+    shape: cylinder
+  }
+  ts: Thing Shadow {
+    shape: page
+  }
+  collar: Collar {
+    shape: square
+  }
+
+  app -> app: Generates an ID (A, B, or C)
+  app -> collar: Sends action with ID over BT
+  app -> api: Creates action with ID (A or B)
+  api -> db: Save action
+  api -> ts: Add action to queue
+  ts -> collar: Updates Shadow
+  collar -> collar: Receives action (over BT or TS)
+  collar -> collar: Parses ID
+  collar -> collar: If not already handled, process
+  collar -> api: PATCH action success
+  api -> db: Update status
+  api -> ts: Remove from shadow
+}

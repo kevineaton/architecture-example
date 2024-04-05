@@ -1,0 +1,92 @@
+Metric Validation Algorithm {
+  start: Start {
+    shape: circle
+  }
+  sendEvent: Send metric_anomaly Event \n IF Anomalies Discovered {
+    shape: square
+  }
+  end: End {
+    shape: circle
+  }
+
+  exer60: Exercise Minutes > 60 {
+    shape: diamond
+  }
+  exer60Event: Add Anomaly, Fix {
+    shape: square
+  }
+  sleep60: Sleep Minutes > 60 {
+    shape: diamond
+  }  
+  sleep60Event: Add Anomaly, Fix {
+    shape: square
+  }
+  comp60: Companion Minutes > 60 {
+    shape: diamond
+  }  
+  comp60Event: Add Anomaly, Fix {
+    shape: square
+  }
+  wifi60: Wifi Minutes > 60 {
+    shape: diamond
+  }  
+  wifi60Event: Add Anomaly, Fix {
+    shape: square
+  }
+  cell60: Cell Minutes > 60 {
+    shape: diamond
+  }  
+  cell60Event: Add Anomaly, Fix {
+    shape: square
+  }
+
+  connectivity60: Cell + WiFi Minutes > 60 {
+    shape: diamond
+  }  
+  connectivity60Event: Add Anomaly, Leave {
+    shape: square
+  }
+  activity60: Exer. + Sleep Minutes > 60 {
+    shape: diamond
+  }  
+  activity60Event: Add Anomaly, Leave {
+    shape: square
+  }
+
+  tempSwapped: Temperatures Swapped {
+    shape: diamond
+  }
+  tempSwappedEvent: Add Anomaly, Fix {
+    shape: square
+  }
+
+  stepsHuge: Steps Over 5,000 {
+    shape: diamond
+  }
+  stepsHugeEvent: Add Anomaly, Leave {
+    shape: square
+  }
+
+  start -> exer60
+  exer60 -> exer60Event -> sleep60: Yes
+  exer60 -> sleep60: No
+  sleep60 -> sleep60Event -> comp60: Yes
+  sleep60 -> comp60: No
+  comp60 -> comp60Event -> wifi60: Yes
+  comp60 -> wifi60: No
+  wifi60 -> wifi60Event -> cell60: Yes
+  wifi60 -> cell60: No
+  cell60 -> cell60Event -> connectivity60: Yes
+  cell60 -> connectivity60: No
+  connectivity60 -> connectivity60Event -> activity60: Yes
+  connectivity60 -> activity60: No
+  activity60 -> activity60Event -> tempSwapped: Yes
+  activity60 -> tempSwapped: No
+  tempSwapped -> tempSwappedEvent -> stepsHuge: Yes
+  tempSwapped -> stepsHuge: No
+
+  stepsHuge -> stepsHugeEvent -> sendEvent: Yes
+  stepsHuge -> sendEvent: No
+
+  sendEvent -> end
+}

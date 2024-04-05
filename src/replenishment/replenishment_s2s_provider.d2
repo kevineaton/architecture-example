@@ -1,0 +1,20 @@
+Server to Server Provider-Driven Replenishment: {
+    shape: sequence_diagram
+    User; App; Provider
+    User -> App:       User sets up app
+    App -> User:       Prompts for Replenishment Enrollment
+    User -> App:       Selects a Provider
+    App -> User:       Presents webview hosted by Provider\n for selecting products
+    User -> Provider:   Selects products and finalizes configuration
+    Provider -> App:   Provides token via server to server API call
+    App -> User:       Confirms selection and tracks usage
+    User -> App:       User uses product and device tracks burndown
+    App -> Provider:   An order is required to replenish, code is\nsent to provider to place the order
+    Provider -> Provider: Handles the order
+    Provider -> App: Notifies App about the order status (pending, shipped, delivered)
+    App -> User:  Provides notices to user
+    User -> App: User cancels order OR accepts order
+    App -> Provider: IF cancelled, uses token to notify to cancel order
+    Provider -> User: User receives order
+    Provider -> App: Order is complete and on-hand amount is updated
+}

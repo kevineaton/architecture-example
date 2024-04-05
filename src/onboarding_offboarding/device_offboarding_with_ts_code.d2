@@ -1,0 +1,21 @@
+Onboarding HTTP Calls: {
+  shape: sequence_diagram
+  call: Caller; unlinkRequest: Unlink Request; actionProcessedRequest: Activate;
+
+  unlinkRequest: |go
+  DELETE /users/:id/devices/:id
+  |
+
+  actionProcessedRequest: |go
+  PATCH /users/:id/devices/:id/actions/unlinkDevice
+  {
+    "status": "success"
+  }
+  |
+
+  
+  call -> unlinkRequest
+  unlinkRequest -> call: Success
+  call -> actionProcessedRequest
+  actionProcessedRequest -> call: Success
+}

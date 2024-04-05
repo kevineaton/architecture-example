@@ -1,0 +1,27 @@
+Hosted Replenishment: {
+    shape: sequence_diagram
+    user: User; app: App App; cert: App Certification; portal: App Portal; provider: Provider
+
+    provider -> portal: Signs up for service
+    provider -> portal: Provides / uploads available stocks and capabilities\n (delivery, pickup only, etc)
+    portal -> cert: App tests and certifies configuration
+    cert -> portal: Portal is made active
+    portal -> provider: Provider is notified service is active
+    provider -> portal: Updates about inventory and capabilities
+
+    user -> app: Sets up devices and app
+    app -> user: Prompts for replenishment enrollment
+    user -> app: Searches and selects a provider
+    app -> user: Confirms payment information and options
+    app -> app: Tracks consumption and burndown
+    app -> user: Notifies user about placing an order in 24 hours with\n option to accept, decline, or pause
+    app -> portal: Places an order and provides customer information
+    portal -> provider: Notifies provider of an order and allows 24 hours to decline
+    provider -> portal: Confirms ability to fulfill order or automatically\n confirms after 24 hours
+    portal -> app -> user: Notifies about order being fulfilled 
+    provider -> provider: Handles order
+    provider -> portal: Provides updates for the order
+    portal -> app -> user: Provides updates to user
+    user -> app: Order delivers, quantities updated
+    portal -> provider: Order marked as completed
+}

@@ -1,0 +1,29 @@
+Onboarding HTTP Calls: {
+  shape: sequence_diagram
+  call: Caller; preregRequest: Pre-register; activateRequest: Activate; 
+
+  preregRequest: |go
+  POST /users/:id/devices/preregister
+  {
+    "productId": "2200230001",
+    "productFamily": "23",
+    "plan": "33",
+    "nicknname": "Test Collar"
+  }
+  |
+
+  activateRequest: |go
+  POST /users/:id/devices
+  {
+    "secretKey": "key",
+    "imei": "imei",
+    "iccid": "iccid",
+    "hardwareId": "hardwareId"
+  }
+  |
+
+  call -> preregRequest 
+  preregRequest -> call: pending
+  call -> activateRequest
+  activateRequest -> call: success
+}

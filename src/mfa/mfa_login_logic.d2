@@ -1,0 +1,35 @@
+authFlow: Authenticator MFA Login {
+  start{
+    shape: circle
+  }
+  end{
+    shape: circle
+  }
+  validateCredentials: Credentials Correct?{
+    shape: diamond
+  }
+  enabledCheck: OTP Enabled?{
+    shape: diamond
+  }
+  whichMethodCheck: Which Method?{
+    shape: diamond
+  }
+  authAttemptValid: Auth Code Valid?{
+    shape: diamond
+  }
+  emailMethod: Email
+  authMethod: Authenticator
+
+  start -> Login Form -> validateCredentials
+  validateCredentials -> end: Invalid
+  validateCredentials -> enabledCheck: Valid
+  enabledCheck -> whichMethodCheck: More Than One?
+  whichMethodCheck -> emailMethod
+  whichMethodCheck -> authMethod
+  emailMethod -> Receive Email for Code -> Enter Code in App -> authAttemptValid
+  authMethod -> Open Authenticator for Code -> Enter Code in App -> authAttemptValid
+  authAttemptValid -> Show Error: Invalid
+  Show Error -> end
+  authAttemptValid -> Logged In: Valid
+  Logged In -> end
+}

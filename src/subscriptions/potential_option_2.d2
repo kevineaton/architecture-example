@@ -1,0 +1,67 @@
+direction: left
+
+Potential - Pre-Registration {
+  shape: sequence_diagram
+
+  user: User {
+    shape: person
+  }
+  web: Web {
+    shape: square
+  }
+  api: API {
+    shape: cloud
+  }
+  billing: Billing Providers {
+    shape: cloud
+  }
+  end: END {
+    shape: circle
+  }
+
+  user -> user: Purchases product on Shopify, optionally with pre-paid sub
+  user -> user: Product arrives
+  user -> web: Signs up, verifies (discussed elsewhere)
+  user -> web: User is shown list of products, selects product
+  web -> end: IF selected product does not need a subscription, send to app
+  web -> web: IF selected product needs a subscription, continue
+  web -> api: Fetch existing pending subscriptions, reports to user
+  api -> web: Returns pending subscriptions already set up (prevents duplication)
+  web -> user: Prompts if existing subscription already
+  user -> end: IF sub already set up and no other sub desired, send to app
+  user -> user: ELSE user continues in web app
+  user -> web -> api: User sets up payment information, selects plan
+  api -> billing: Create payment method and subscription
+  billing -> api: Returns data
+  api -> api: Adds subscription to DB as pending
+  api -> web: Success
+  web -> user: Instructs to continue in mobile app
+}
+
+
+Potential - Activation {
+  shape: sequence_diagram
+
+  app: Mobile {
+    shape: square
+  }
+  device: Device {
+    shape: square
+  }
+  api: API {
+    shape: cloud
+  }
+
+  app -> app: User logs in, /somehow/ ends up on device activation
+  app -> app: Scans for devices
+  app -> device: Device found
+  device -> app: Reports status
+  app -> api: Option A or Option B (see previous instructions)
+  api -> app: Confirms capability to activate
+  app -> device: Sends data and instructions to activate
+  device -> api: Requests activation
+  api -> api: Checks subscription for device family is available if needed
+  api -> device: Device is activated, status is active
+  device -> app: Device reports status
+  app -> app: User continues set up
+}

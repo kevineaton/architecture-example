@@ -1,0 +1,15 @@
+
+Authenticator MFA Enroll Sequence {
+  shape: sequence_diagram
+  client: Client
+  api: API
+  auth: OTP Authenticator App
+
+  client -> api: Enroll: \nhttps://apidocs.api.App.com/\#tag/User/operation/User%20-%20Enroll%20OTP\n https://api.App.com/users/:userId/otp/enroll
+  api -> client: Sends image for verification
+  client -> auth: Scan QR code or enter returned secret
+  auth -> auth: Generate a code
+  auth -> client: Retrieve code
+  client -> api: Verify: \nhttps://apidocs.api.App.com/\#tag/User/operation/User%20-%20Verify%20OTP\n https://api.App.com/users/:userId/otp/verify
+  api -> client: Validates and enrolls
+}

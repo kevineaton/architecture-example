@@ -1,0 +1,55 @@
+direction: left
+
+Current - No Subscription Needs Pre-Registration - Pre-Registration {
+  shape: sequence_diagram
+
+  user: User {
+    shape: person
+  }
+  web: Web {
+    shape: square
+  }
+  api: API {
+    shape: cloud
+  }
+  billing: Billing Providers {
+    shape: cloud
+  }
+
+  user -> user: Purchases product on Shopify
+  user -> user: Product arrives
+  user -> web: Signs up, verifies (discussed elsewhere)
+  user -> web: User enters serial
+  web -> api: Requests verification, plans, etc
+  api -> web: Verifies serial exists, returns success or error
+  web -> api: User requests activation
+  api -> api: Adds device to DB as pending, no subscription (or fake subscription) linked
+  api -> web: Success
+  web -> user: Instructs to continue in mobile app
+}
+
+
+Current - No Subscription Needs Pre-Registration - Activation {
+  shape: sequence_diagram
+
+  app: Mobile {
+    shape: square
+  }
+  device: Device {
+    shape: square
+  }
+  api: API {
+    shape: cloud
+  }
+
+  app -> app: User logs in, /somehow/ ends up on device activation
+  app -> app: Scans for devices
+  app -> device: Device found
+  device -> app: Reports status
+  app -> device: Sends data and instructions to activate
+  device -> api: Requests activation
+  api -> api: Checks device is pre-registered and subscription set up
+  api -> device: Device is activated, status is active
+  device -> app: Device reports status
+  app -> app: User continues set up
+}

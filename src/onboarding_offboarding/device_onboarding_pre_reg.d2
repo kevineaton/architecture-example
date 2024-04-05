@@ -1,0 +1,26 @@
+Onboarding with Preregistration: {
+  shape: sequence_diagram
+  web: Web App; api: API Server; dev-micro: Devices Microservice; billing-micro: Billing Microservice; app: Mobile App; device: Device;
+
+  web -> api: productId, productFamily, plan, nickname
+  api -> dev-micro: Checks validity
+  dev-micro -> billing-micro: Checks user has billing information
+  billing-micro -> dev-micro: If invalid, returns error - If valid, returns success
+  dev-micro -> dev-micro: Saves as `status` `pending`
+  dev-micro -> api: Success
+  api -> web: Success, instructs to continue in App
+  app -> api: Get list of pending devices
+  api -> app: Returns list of devices
+  app -> app: If no devices, show error
+  app -> app: If devices, scans for devices
+  app -> device: Device found, sends Wifi
+  device -> app: Confirms Wifi
+  app -> device: Sends JWT for onboarding
+  device -> api: Requests activation
+  api -> dev-micro: Checks secretKey and that the device is pre-registered
+  dev-micro -> dev-micro: If information is correct, configures TS, sets `status` to `active`
+  dev-micro -> api: Returns keys and information
+  api -> device: Returns keys and information
+  device -> app: Confirms onboarded
+
+}

@@ -1,0 +1,213 @@
+
+direction: up
+
+# Data
+
+db: Aurora / MySQL {
+  shape: cylinder
+}
+
+# Microservices
+microservices: Microservices {
+  activation: Activation {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    Container <-> redis
+  }
+
+  analytics: Analytics {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    rabbit: Rabbit MQ {
+      shape: queue
+    }
+    Container <-> redis
+    Container <-> rabbit
+  }
+
+  apps: Apps {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    Container <-> redis
+  }
+
+  billing: Billing {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    Container <-> redis
+  }
+
+  devices: Devices {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    rabbit: Rabbit MQ {
+      shape: queue
+    }
+    Container <-> redis
+    Container <-> rabbit
+  }
+
+  logs: Logs {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    Container <-> redis
+  }
+
+  media: Media {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    Container <-> redis
+  }
+
+  metrics: Metrics {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    rabbit: Rabbit MQ {
+      shape: queue
+    }
+    Container <-> redis
+    Container <-> rabbit
+  }
+
+  notifications: Notifications {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    Container <-> redis
+  }
+
+  pets: Pets {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    rabbit: Rabbit MQ {
+      shape: queue
+    }
+    Container <-> redis
+    Container <-> rabbit
+  }
+
+  social: Social {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    Container <-> redis
+  }
+
+  streaming: Streaming {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    Container <-> redis
+  }
+  
+  users: Users {
+    shape: square
+    redis: Redis: {
+      shape: cylinder
+    }
+    Container <-> redis
+  }  
+}  
+
+third: Third Party {
+  Billing {
+    stripe: Stripe
+    chargify: Chargify
+    stripe <-> chargify
+  }
+  Interactions {
+    alexa: Alexa
+    cop: CoPilot
+  }
+  Messaging {
+    mailgun: Mailgun
+    sns: SNS (Push)
+  }
+  Monitoring {
+    nr: New Relic
+    crash: Crashlytics
+    loggly: Loggly
+  }
+}
+
+
+sockets-api: Web Sockets API {
+  shape: cloud
+}
+mqtt-api: MQTT API {
+  shape: cloud
+}
+admin-service: Admin Server {
+  shape: cloud
+}
+ts: Thing Shadow {
+  shape: cloud
+}
+
+# Ingress
+api: Gateway {
+  shape: cloud
+}
+
+# Clients
+mobile: Android / iOS {
+  shape: square
+}
+hardware: Collar, Etc {
+  shape: square
+}
+setup: Setup App\n setup.App.com{
+  shape: square
+}
+admin-panel: Admin Panel {
+  shape: square
+}
+
+#
+# Connections
+# 
+
+mobile -> api
+mobile -- sockets-api
+mobile <-> third.Interactions.cop
+hardware -> api
+hardware <-> ts
+hardware -> mqtt-api: Pending Implementation
+setup -> api
+admin-panel -> admin-service
+
+ts <-> microservices: Via AWS SDK
+api -> microservices: Using node-micro-sdk
+admin-service -> microservices: Using go-sdk
+sockets-api <-> microservices: Receive locations and status bars
+mqtt-api -> microservices: Pending Implementation
+
+microservices -> db: each container
+microservices <-> third
+
+microservices.logs -> third.Monitoring.Loggly
+microservices.notifications -> third.Messaging.mailgun
+microservices.notifications -> third.Messaging.sns
+microservices.billing -> third.Billing.stripe
+microservices.billing -> third.Billing.chargify

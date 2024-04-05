@@ -1,0 +1,42 @@
+
+start{
+  shape: circle
+}
+
+end{
+  shape: circle
+}
+
+dashboard: Dashboard or Map {
+  shape: page
+}
+
+checkDevices: If Devices with Pets {
+  shape: diamond
+}
+
+loop: For Each Pet{
+  bt: Has Bluetooth{
+    shape: diamond
+  }
+  status2Min: Has Status Within 2 Minutes{
+    shape: diamond
+  }
+  status24Hours: Has Status Over 24 Hours{
+    shape: diamond
+  }
+
+  bt -> send over bt: true
+  bt -> status2Min: false
+  status2Min -> ignore: true
+  status2Min -> status24Hours: false
+  status24Hours -> send to server: false
+  status24Hours -> ignore: true
+}
+
+start -> dashboard
+dashboard -> checkDevices
+
+checkDevices -> loop: true
+checkDevices -> end: false
+loop -> end: done

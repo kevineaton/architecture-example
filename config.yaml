@@ -1,0 +1,6 @@
+d2_theme: 8
+d2_layout: elk
+input_directory: ./src
+output_directory: ./build
+page_template: ./leaf.html
+clean: true

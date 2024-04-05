@@ -1,0 +1,14 @@
+Offboarding with Thing Shadow: {
+  shape: sequence_diagram
+  call: Caller; api: API Server; dev-micro: Devices Microservice; billing-micro: Billing Microservice; device: Device;
+
+  call -> api: Requests device deletion
+  api -> dev-micro: Forwards request
+  dev-micro -> dev-micro: Generates `unlinkDevice` action
+  dev-micro -> device: `unlinkDevice` action added to TS queue
+  device -> device: Receives action, wipes memory and data, tells the server the `unlinkDevice` action was `status`\: `success`, and reboots
+  device -> api: Informs device is wiped
+  api -> dev-micro: Processes the `unlinkDevice` action. Deletes device (dev) or changes serial to have REMOVED (prod)
+  dev-micro -> billing-micro: Cancels subscription
+  dev-micro -> dev-micro: Pauses sim (if applicable)
+}

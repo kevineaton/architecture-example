@@ -1,0 +1,39 @@
+direction: left
+
+Walk {
+  shape: sequence_diagram
+
+  app: Mobile App {
+    shape: square
+  }
+  api: API {
+    shape: cloud
+  }
+  ts: Thing Shadow {
+    shape: cloud
+  }
+  collar: Collar {
+    shape: square
+  }
+
+  app -> app: User Starts Walk
+  app -> app: User told Walk Pending
+  app -> api: POST create a walk with startTime
+  api -> app: Walk with ID
+  api -> api: Set walkModeEnabled on
+  app -> api: Action startWalk with walkId
+  api -> ts -> collar: Forwards action
+  collar -> api: PATCH success to action
+  collar -> api: Status Bar walk enabled on
+  collar -> app: BT Status Bar walk enabled on
+  app -> app: User told Walk Started
+  collar -> collar: Walk Continues
+  app -> app: Walk Continues
+  app -> app: User Ends Walk
+  app -> api: Action stopWalk with walk id
+  api -> ts -> collar: Forwards action
+  collar -> api: PATCH walk with endTime and locations
+  collar -> api: Status Bar walk enabled off
+  app -> api: PATCH walk with endTime and name/etc
+  app -> app: User told Walk Ended
+}

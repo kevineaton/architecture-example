@@ -1,0 +1,22 @@
+Cisco SIM information via the JASPER platform: {
+  current: What we're currently getting
+  other: What else we can grab
+  details: Device Details
+  usage: Device Usage
+  zone: Device Usage by Zone
+  dubz: Individual Zone Details
+  zonesInfo: ICCID\n TimeStamp\n CycleStartDate\n CycleEndDate
+  exampleA: RatePlan\n RatePlanVersion\n Zone\n DataUsage\n DataUsageUnit\n VoiceMTUsage\n VoiceMTUsageUnit\n VoiceMOUsage\n VoiceMOUsageUnit\n SMSmtusage\n SMSmousage
+  exampleB: RatePlan\n RatePlanVersion\n Zone\n DataUsage\n DataUsageUnit\n VoiceMTUsage\n VoiceMTUsageUnit\n VoiceMOUsage\n VoiceMOUsageUnit\n SMSmtusage\n SMSmousage
+  session: Session Details
+
+  current -> details -> ICCID\n Status\n RatePlan\n CommunicationPlan \n IMSI (mobile subscriber identity)\n IMEI\n MSISDN\n EndConsumerId\n DateActivated\n DateAdded\n DateUpdated\n FixedIPAddress\n FixedIPV6Address\n SimNotes\n ModemID\n DeviceID\n GlobalSimType\n EUICCID\n MEC\n AccountID (enterprise account)\n Customer\n AccountCustom1get\n OperatorCustom1\n CustomerCustom1
+  current -> usage -> ICCID\n IMSI\n MSISDN\n IMEI\n Status\n RatePlan\n CommunicationPlan\n CtdDataUsage (in bytes)\n CtdSMSUsage\n CtdVoiceUsage (voice seconds)\n CtdSessionCount\n OverageLimitReached\n OverageLimitOverride
+
+  other -> zone -> zonesInfo
+  zone -> dubz
+  dubz -> exampleA: Zone A
+  dubz -> exampleB: Zone B
+
+  other -> session -> ICCID\n IPAddress\n IPV6Address\n DateSessionStarted\n DateSessionEnded
+}

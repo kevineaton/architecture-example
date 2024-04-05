@@ -1,0 +1,122 @@
+direction: left
+
+Live Tracking Starting {
+  shape: sequence_diagram
+
+  app: Mobile App {
+    shape: square
+  }
+  api: API {
+    shape: cloud
+  }
+  ts: Thing Shadow {
+    shape: cloud
+  }
+  collar: Collar {
+    shape: square
+  }
+
+  app -> app: User hits enable
+  app -> app: App tells user we requested it
+  app -> api: PATCH Collar Settings with liveTrackingEnabled = on
+  app -> api: POST Action `setLiveTracking` with `arguments`
+  api -> ts: Send `updateSettings` Action
+  api -> ts: Send `setLiveTracking` Action with `arguments`
+  ts -> collar: Actions in queue, received
+  collar -> collar: Processes `updateSettings` normally (*)
+  collar -> collar: Processes `setLiveTracking` and sets collar to state of arguments
+  collar -> api: PATCH action success for each
+  api -> ts: Remove each action
+  collar -> api: POST statusBar with liveTrackingEnabled = on and liveTrackingUntil = specified time
+  api -> app: (Polling or Socket) Status bar has liveTrackingEnabled = on and liveTrackingUntil = specified time
+  app -> app: Tells user live tracking has started
+}
+
+Live Tracking End - Requested {
+  shape: sequence_diagram
+
+  app: Mobile App {
+    shape: square
+  }
+  api: API {
+    shape: cloud
+  }
+  ts: Thing Shadow {
+    shape: cloud
+  }
+  collar: Collar {
+    shape: square
+  }
+
+  app -> app: User hits UI to turn off
+  app -> app: App tells user we requested it
+  app -> api: PATCH setting liveTrackingEnabled = off
+  app -> api: POST Action `setLiveTracking` with `arguments`
+  api -> ts: Send `updateSettings` Action
+  api -> ts: Send `setLiveTracking` Action with `arguments`
+  ts -> collar: Actions in queue, received
+  collar -> collar: Processes `updateSettings` normally (*)
+  collar -> collar: Processes `setLiveTracking` and sets collar to state of arguments
+  collar -> api: PATCH action success for each
+  api -> ts: Remove actions
+  collar -> api: POST statusBar with liveTrackingEnabled = off
+  api -> app: (Polling or Socket) Status bar has liveTrackingEnabled = off
+  app -> app: Tells user live tracking has ended
+}
+
+
+Live Tracking End - Expired No Refresh {
+  shape: sequence_diagram
+
+  app: Mobile App {
+    shape: square
+  }
+  api: API {
+    shape: cloud
+  }
+  collar: Collar {
+    shape: square
+  }
+
+  app -> app: Sees status bar for devices with liveTrackingUntil
+  app -> app: Sees < X seconds (default to 30) left in tracking
+  app -> app: Prompts user to refresh
+  app -> app: User chooses no or ignores
+  collar -> collar: liveTrackingUntil passes
+  collar -> api: PATCH Collar Settings with liveTrackingEnabled off
+  collar -> api: POST statusBar with liveTrackingEnabled = off
+  api -> app: (Polling or Socket) Status bar has liveTrackingEnabled = off
+  app -> app: Tells user live tracking has ended
+}
+
+Live Tracking End - Expired But Refreshed {
+  shape: sequence_diagram
+
+  app: Mobile App {
+    shape: square
+  }
+  api: API {
+    shape: cloud
+  }
+  ts: Thing Shadow {
+    shape: cloud
+  }
+  collar: Collar {
+    shape: square
+  }
+
+  app -> app: Sees status bar for devices with liveTrackingUntil
+  app -> app: Sees < X seconds (default to 30) left in tracking
+  app -> app: Prompts user to refresh
+  app -> app: User chooses yes to refresh
+  app -> api: POST Action `setLiveTracking` with `arguments`
+  api -> ts: Send `setLiveTracking` Action with `arguments`
+  ts -> collar: Action in queue, received
+  collar -> collar: Processes `setLiveTracking` and sets collar to state of arguments
+  collar -> api: PATCH action success
+  api -> ts: Remove action
+  collar -> collar: updates the threshold and remains in live tracking mode
+  collar -> api: POST statusBar with liveTrackingEnabled = on and new until time
+  api -> app: (Polling or Socket) Status bar has liveTrackingEnabled = on and changed `until` time
+  app -> app: Tells user live tracking has been extended
+}

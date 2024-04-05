@@ -1,0 +1,31 @@
+General Action Sequence {
+  shape: sequence_diagram
+  client: Client {
+    shape: square
+  }
+  api: API {
+    shape: cloud
+  }
+  devices: Devices Service {
+    shape: square
+  }
+  db: DB {
+    shape: cylinder
+  }
+  ts: Thing Shadow {
+    shape: page
+  }
+  collar: Collar {
+    shape: square
+  }
+
+  client -> api -> devices: POST /users/:id/devices/:id/actions
+  devices -> devices: validates / checks timeout
+  devices -> db: saves
+  devices -> ts: puts in queue
+  ts -> collar: reads from queue
+  collar -> collar: processes / handles
+  collar -> api -> devices: PATCH /users/:id/devices/:id/actions/:action
+  devices -> db: updates
+  devices -> ts: removes from queue
+}

@@ -1,0 +1,45 @@
+
+Actions Device Logic {
+  start: Start {
+    shape: circle
+  }
+  end: End {
+    shape: circle
+  }
+  actionIntent: Mobile triggers Action {
+    shape: square
+  }
+  actionID: ID Generated {
+    shape: square
+  }
+  actionSentBT: Action Sent over BT {
+    shape: square
+  }
+  actionSentTS: Action Sent to Server {
+    shape: square
+  }
+  actionReceived: Action Received (BT or TS) {
+    shape: square
+  }
+  actionHandledCheck: Action Handled Already {
+    shape: diamond
+  }
+  actionHandle: Action Handled {
+    shape: square
+  }
+  actionUpdate: Action Updated to Server {
+    shape: square
+  }
+
+  start -> actionIntent
+  actionIntent -> actionID: App gets ID
+  actionID -> actionSentBT
+  actionID -> actionSentTS
+  actionSentBT -> actionReceived
+  actionSentTS -> actionReceived
+  actionReceived -> actionHandledCheck
+  actionHandledCheck -> actionHandle: Not Yet
+  actionHandle -> actionUpdate: Update as Handled on Device
+  actionHandledCheck -> actionUpdate: Already Handled
+  actionUpdate -> end
+}

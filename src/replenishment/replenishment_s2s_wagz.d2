@@ -1,0 +1,22 @@
+Server to Server App-Driven Replenishment: {
+    shape: sequence_diagram
+    User; App; Provider
+    Provider -> App:   All possible products and their stock level provided to App
+    Provider -> App:   Changes in availability notified ASAP (method TBD)
+    Provider -> App:   Authentication token provided for order processing
+    User -> App:       User sets up app
+    App -> User:       Prompts for Replenishment Enrollment
+    User -> App:       Selects a Provider
+    App -> User:       Shows list of available products for provider
+    User -> App:   Selects products, provides payment information, and finalizes configuration
+    App -> User:       Confirms selection and tracks usage
+    User -> App:       User uses product and device tracks burndown
+    App -> Provider:   An order is required to replenish, code is sent to provider to place the order
+    Provider."Since there is no user-information pre-established, this API will require\n App to provide customer name, shipping information, product, and amount ordered."
+    Provider -> App: Notifies App about the order status (pending, shipped, delivered)
+    App -> User:  Provides notices to user
+    User -> App: User cancels order OR accepts order
+    App -> Provider: IF cancelled, uses token to notify to cancel order with the order identifier
+    Provider -> User: User receives order
+    Provider -> App: Order is complete and on-hand amount is updated
+}

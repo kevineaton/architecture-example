@@ -1,0 +1,23 @@
+direction: left
+
+Current - No Pre-Registration - Activation {
+  shape: sequence_diagram
+
+  app: Mobile {
+    shape: square
+  }
+  device: Device {
+    shape: square
+  }
+  api: API {
+    shape: cloud
+  }
+
+  app -> app: User logs in and goes to the device's onboarding screen
+  app -> app: Scans for devices
+  app -> device: Device found
+  app -> api: Requests activation
+  api -> api: Basic checks on data validity
+  api -> app: Device is activated, status is active
+  app -> app: User continues set up
+}
